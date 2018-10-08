@@ -1,0 +1,5 @@
+google.cloudsql:
+  host: host
+  name: pg
+  user: pg
+  pass: pg
