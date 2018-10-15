@@ -7,23 +7,17 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 )
 
 // DequeueSimple consumes messages from queue using RPOP
-func DequeueSimple() (time.Duration, error) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+func DequeueSimple(queue string) (time.Duration, error) {
+	client := NewClient()
 
 	start := time.Now()
-	log.Println("Start dequeue")
 
 	for {
-		err := client.RPop("queue").Err()
+		err := client.RPop(queue).Err()
 		if err != nil {
 			if strings.Contains(err.Error(), "redis: nil") {
 				break
@@ -38,10 +32,10 @@ func DequeueSimple() (time.Duration, error) {
 
 // DequeueSimpleInParallel consumes messages from queue using RPOP
 // and "workers" number of concurrent workers
-func DequeueSimpleInParallel() (time.Duration, error) {
+func DequeueSimpleInParallel(queue string) (time.Duration, error) {
 
 	workers := viper.GetInt("workers")
-	log.Printf("Start dequeue in parallel using %v workers", workers)
+	log.Printf("Start dequeue with RPOP in parallel using %v workers", workers)
 
 	results := make(chan time.Duration)
 
@@ -49,7 +43,7 @@ func DequeueSimpleInParallel() (time.Duration, error) {
 	for i := 0; i < workers; i++ {
 		wg.Add(1)
 		go func() {
-			took, err := DequeueSimple()
+			took, err := DequeueSimple(queue)
 			if err != nil {
 				log.Printf("error while running dequeue: %v", err)
 			}

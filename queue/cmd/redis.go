@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"log"
+	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/yb172/experiments/queue/redisq"
 )
 
@@ -13,53 +15,25 @@ var redisCmd = &cobra.Command{
 	Short: "Run queue experiments with redis",
 }
 
-var enqueueCmd = &cobra.Command{
-	Use:   "enqueue",
-	Short: "Enqueue 1M messages",
-	Run: func(cmd *cobra.Command, args []string) {
-		took, err := redisq.Enqueue()
-		if err != nil {
-			log.Fatalf("Error while enqueuing: %v", err)
-		}
-		log.Printf("It took %v to enqueue 1M messages", took)
-	},
-}
-
-var dequeueCmd = &cobra.Command{
-	Use:   "dequeue",
-	Short: "Dequeue 1M messages",
-}
-
 var dequeueSimpleCmd = &cobra.Command{
-	Use:   "pop",
-	Short: "Using RPOP",
+	Use:   "simple",
+	Short: "Enqueue and then dequeue using RPOP and multiple workers",
+	Long:  "Dequeue by multiple workers",
 	Run: func(cmd *cobra.Command, args []string) {
-		took, err := redisq.DequeueSimple()
-		if err != nil {
-			log.Fatalf("Error while dequeuing: %v", err)
-		}
-		log.Printf("It took %v to dequeue 1M messages", took)
-	},
-}
+		queueName := time.Now().Format(time.RFC822)
+		messagesCount := viper.GetInt("messages")
 
-var dequeueSimpleInParallelCmd = &cobra.Command{
-	Use:   "pop-parallel",
-	Short: "Using RPOP and multiple workers",
-	Run: func(cmd *cobra.Command, args []string) {
-		took, err := redisq.DequeueSimpleInParallel()
+		redisq.DoEnqueue(queueName, messagesCount)
+		took, err := redisq.DequeueSimpleInParallel(queueName)
 		if err != nil {
 			log.Fatalf("Error while dequeuing: %v", err)
 		}
-		log.Printf("It took %v to dequeue 1M messages", took)
+		log.Printf("It took %v to dequeue %v messages", took, messagesCount)
 	},
 }
 
 func init() {
-	dequeueCmd.AddCommand(dequeueSimpleCmd)
-	dequeueCmd.AddCommand(dequeueSimpleInParallelCmd)
-
-	redisCmd.AddCommand(enqueueCmd)
-	redisCmd.AddCommand(dequeueCmd)
+	redisCmd.AddCommand(dequeueSimpleCmd)
 
 	rootCmd.AddCommand(redisCmd)
 }

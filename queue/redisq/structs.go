@@ -15,10 +15,10 @@ type Message struct {
 	Params      map[string]string `json:"params"`
 }
 
-// generateMessages generates 1M random messages
-func generateMessages() []Message {
+// generateMessages generates n random messages
+func generateMessages(n int) []Message {
 	var msgs []Message
-	for i := 0; i < 1000000; i++ {
+	for i := 0; i < n; i++ {
 		msgs = append(msgs, Message{
 			ID:          rand.Int63(),
 			Name:        "The name of the job. Could be anything",

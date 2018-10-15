@@ -1,1 +1,7 @@
+redis:
+  addr: "localhost:6379"
+
+messages: 1000000
 workers: 20
+# messages: 10
+# workers: 1

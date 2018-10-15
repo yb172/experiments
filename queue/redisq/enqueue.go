@@ -6,19 +6,22 @@ import (
 	"sync"
 	"time"
 
-	"github.com/go-redis/redis"
 	"github.com/spf13/viper"
 )
 
-// Enqueue places 1M messages in redis
-func Enqueue() (time.Duration, error) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
+// DoEnqueue places n messages in redis
+func DoEnqueue(queue string, messages int) {
+	took, err := enqueue(queue, messages)
+	if err != nil {
+		log.Fatalf("Error while enqueuing: %v", err)
+	}
+	log.Printf("It took %v to enqueue %v messages", took, messages)
+}
 
-	msgs := generateMessages()
+func enqueue(queue string, messages int) (time.Duration, error) {
+	client := NewClient()
+
+	msgs := generateMessages(messages)
 	emsgs, err := encodeMessages(msgs)
 	log.Println("Start enqueue")
 	if err != nil {
@@ -41,7 +44,7 @@ func Enqueue() (time.Duration, error) {
 		wg.Add(1)
 		go func() {
 			for m := range in {
-				if err := client.LPush("queue", m).Err(); err != nil {
+				if err := client.LPush(queue, m).Err(); err != nil {
 					log.Printf("error while pushing to list: %v", err)
 				}
 			}
