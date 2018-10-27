@@ -2,6 +2,7 @@ redis:
   addr: "localhost:6379"
 
 messages: 1000000
-workers: 20
-# messages: 10
+workers: 500
+delay: 10ms
+# messages: 2
 # workers: 1
