@@ -67,3 +67,19 @@ Event: &{0xc4200c4360 turn-on off on <nil> [] false false}
 Maybe I should use `Async` [docs](https://godoc.org/github.com/looplab/fsm#Event.Async)? No, it seems to do different thing. Maybe some error is happening? No, no errors. It looks like deadlock is happening here: [fsm.go#270](https://github.com/looplab/fsm/blob/master/fsm.go#L270) - lock is not released until state transition is complete and it would be complete when we transition to a new state. But to transition to a new state we need lock...
 
 It is actually not necessarily a bad thing. Auto-firing events could potentially lead to an endless loop. There might be a way to get around that but it's probably simpler to just not allow that. But! In this case it would be nice not to hang in deadlock but to give a meaningful error message. Opened [issue](https://github.com/looplab/fsm/issues/36) and PR to fix it in project repository, lets see what would author say (if anything).
+
+## Step 3
+
+So apparently we could not create most useless FSM using FSM API, but we could do a hack to still implement the machine: use goroutine which waits.
+
+And it works! Though it looks like a very bad practice to use this approach anywhere except for this example - FSM for which state transitions happen only outside of FSM would be more simple and easier to test.
+
+## Step 4
+
+Code works but program doesn't feel like most useless machine - only few lines of text are printed. So let's make it interacitve - add a way to submit `on` and `off` commands to interact with the machine.
+
+Try running:
+
+```bash
+go build main.go && ./main useless
+```

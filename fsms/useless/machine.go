@@ -3,6 +3,7 @@ package useless
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/looplab/fsm"
 )
@@ -22,24 +23,26 @@ func Create() *MostUselessMachine {
 			{Name: "turn-off", Src: []string{"on"}, Dst: "off"},
 		},
 		fsm.Callbacks{
-			"before_event": m.log,
-			"leave_state":  m.log,
-			"enter_state":  m.log,
-			"after_event":  m.log,
-			"leave_off":    func(_ *fsm.Event) { m.onTurnOn() },
+			"leave_state": onLeave,
+			"leave_off":   m.onTurnOn,
 		},
 	)
 
 	return &m
 }
 
-func (m *MostUselessMachine) log(e *fsm.Event) {
-	fmt.Printf("Event: %v\n", e)
+func onLeave(e *fsm.Event) {
+	fmt.Printf("\nMoving from state %s to %s\n", e.Src, e.Dst)
 }
 
-func (m *MostUselessMachine) onTurnOn() {
-	fmt.Println("onTurnOn")
-	if err := m.FSM.Event("turn-off"); err != nil {
-		log.Println(err)
-	}
+func (m *MostUselessMachine) onTurnOn(_ *fsm.Event) {
+	go func() {
+		time.Sleep(2 * time.Second)
+		if m.FSM.Current() == "on" {
+			fmt.Println("Machine: Not today")
+			if err := m.FSM.Event("turn-off"); err != nil {
+				log.Printf("Error happened: %v", err)
+			}
+		}
+	}()
 }
