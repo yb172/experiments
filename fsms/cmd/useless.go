@@ -10,7 +10,7 @@ import (
 	"github.com/yb172/experiments/fsms/useless"
 )
 
-// uselessCmd represents the redis command
+// uselessCmd represents "fsms useless" command
 var uselessCmd = &cobra.Command{
 	Use:   "useless",
 	Short: "Most useless machine... ever!",

@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package tictactoe;
+
+// Interface exposed by server
+service TicTacToeServer {
+    rpc Play(stream Action) returns (stream Result) {}
+}
+
+// User action
+message Action {
+    // Contents of an action
+    string text = 1;
+}
+
+// Result of user action
+message Result {
+    // State of game board
+    Board board = 1;
+    // Response to user action, if any
+    string message = 2;
+    // Description of an error, if any
+    string error = 3;
+}
+
+// State of game board
+message Board {
+    // List of rows
+    repeated Row rows = 1;
+}
+
+// State of board row
+message Row {
+    // List of cells
+    repeated Cell cells = 1;
+}
+
+// State of the cell on game board
+message Cell {
+    // Label of a player who occupies this cell
+    string label = 1;
+}
