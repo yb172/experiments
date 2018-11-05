@@ -92,7 +92,7 @@ Server would keep track of game progress and provide updates to users. And it wo
 
 Since we're not actually building a game as a product we would only support two users.
 
-## Step 1. Game
+## Step 1. Game FSM
 
 All right, we have initial grpc configured but right now it doesn't have anything to talk to. So we need our game implemented. And the first step in it is how game starts. When first user connects - game is created. When second user connects existing game is used where first user is already waiting.
 
@@ -157,3 +157,37 @@ Created -> Waiting for second player -> X move -> X check -> O move -> O check -
 ```
 
 Interesting note here is that our FSM actually doesn't check the game board - it is only responsible for transitions between states. So when we receive "Move 1,1" from O we would first try to trigger FSM event and if that succeeds - we would check if that event caused O to win (then issue "O wins" event) or draw (then issue "draw" event). Else - let X make move (issue "pass move to X" event).
+
+## Step 2. Game logic
+
+So it turns out FSM could help us to "guard" state transitions but it doesn't have logic because we have to issue events outside of FSM (as was discovered in "[most useless machine](./Useless.md)"). What logic do we need? Let's consider what are the events that we have:
+
+* X joins - no logic here
+* O joins - no logic here either
+* X moves - move should happen inside the board on an empty slot. Also after this event happens we have to decide what comes next:
+  * If X have 3 consequtive Xs - then it's "X wins"
+  * If there are no more free slots - then it's "Draw"
+  * Otherwise "Pass move to O"
+* O moves - same as for "X moves" but for O
+
+And that is it. So we don't have a lot of logic.
+
+Next question: which interface should `GameMatch` provide to the user of this interface? It should be same for both X and O but should behave differently for X and O, and provide methods that are related to events:
+
+* `func (g *Game) Join() (*Player, error)` - returns `Player` instance. First caller would get instance for X, second - for O
+* `func (p *Player) Move(row, col int) error` - make a move
+
+One last thing that we wound need is game board where we would store moves and check if win or draw condition happened. `Board` would provide methods:
+
+* `func Create() *Board` - creates new board
+* `func (b *Board) Move(row, col int, label Label) error` - make a move
+* `func (b *Board) CheckWin() bool` - check if move resulted in win
+* `func (b *Board) CheckDraw() bool` - check if there are no more free slots. This actually could be enhanced to check if there are no winning moves possible.
+
+`Board` actually has no need to be accessible outside of `thegame` package so it could be package private: `board`.
+
+A few things came up while implementation was in progress:
+
+* It seems better to have `Player` in a separate package so that it could not access `GameMatch` private fields and would only use public methods
+* Check if move is valid (e.g. cell has not been used) should be performed in callback for `leave_<state>` key. Reason - if check is not passed - no transition should happen. However it is not very convenient to pass arguments to event, type assertion is needed
+* Having set of events for X and for O resulted in some not-nicely-looking funcs in `event-helpers.go`. Alternative would be to have a single event: `join`, `move`, `win`, `pass`, but then we would have to guard move sequence ourselves. Which actually might be better, since we wouldn't have to have duplicate events, states, and these functions. Instead there will be one more field to track - last player, and few more checks for appropriate events. I'll try to refactor the code later.

@@ -14,8 +14,8 @@ func Start() (*GameMatch, error) {
 	return &GameMatch{}, nil
 }
 
-// Join joins player to match in progress
-func Join() (*GameMatch, error) {
+// Get returns match in progress
+func Get() (*GameMatch, error) {
 	if match == nil {
 		return nil, fmt.Errorf("there is no game in progress")
 	}
