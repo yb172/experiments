@@ -1,7 +1,7 @@
-FROM openjdk:8
-
+FROM openjdk:8-alpine AS builder
 COPY . .
-
 RUN ./gradlew build
 
-CMD java -jar ./build/libs/java-multistage.jar
+FROM openjdk:8-alpine
+COPY --from=builder ./build/libs/java-multistage.jar app.jar
+CMD java -jar app.jar
