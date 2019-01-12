@@ -33,6 +33,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
 }
 
+task getDeps(type: Copy) {
+    from sourceSets.test.runtimeClasspath
+    into 'runtime/'
+}
+
 // Define the main class for the application
 mainClassName = 'App'
 

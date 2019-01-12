@@ -75,3 +75,44 @@ test-app            latest              e8a7aadfa0f2        11 seconds ago      
 ```
 
 8 times less than it was originally!
+
+## Speeding things up
+
+Build process however is annoying: everytime gradle downloads itself and all dependencies
+which could take a while (e.g. `time docker build . -t test-app` shows 1 minute), no docker
+caching is leveraged.
+
+It would be nice if we can separate dependencies downloading and actual build.
+
+To do so we first need to add task to download deps to `build.gradle`:
+
+```groovy
+task getDeps(type: Copy) {
+    from sourceSets.test.runtimeClasspath
+    into 'runtime/'
+}
+```
+
+And then update Dockerfile to following:
+
+```Docker
+FROM openjdk:8-alpine AS builder
+COPY gradle ./gradle
+COPY build.gradle settings.gradle gradlew ./
+RUN ./gradlew getDeps
+COPY . .
+RUN ./gradlew build
+
+FROM openjdk:8-alpine
+COPY --from=builder ./build/libs/java-multistage.jar app.jar
+CMD java -jar app.jar
+```
+
+What that is doing it is first copying all gradle files, running task to download deps
+and only then copies the rest and does the build.
+
+That way once we've downloaded gradle and resolved dependencies they are cached.
+
+Before change every docker build took ~1 min.
+After the change first build takes about the same, but subsequent builds are taking ~16s
+(if build files are not updated)

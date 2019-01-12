@@ -1,4 +1,7 @@
 FROM openjdk:8-alpine AS builder
+COPY gradle ./gradle
+COPY build.gradle settings.gradle gradlew ./
+RUN ./gradlew getDeps
 COPY . .
 RUN ./gradlew build
 
