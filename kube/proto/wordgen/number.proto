@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package wordgen;
+
+// NumberGenerator produces random number
+service NumberGenerator {
+
+  // GenerateNumber generates random number
+  rpc GenerateNumber(GenerateNumberReq) returns (GenerateNumberResp) {}
+
+}
+
+// GenerateNumberReq contains data reuqired or helpful for number generation
+message GenerateNumberReq {
+  int32 min = 1;
+  int32 max = 2;
+}
+
+// GenerateNumberResp contains reults of number generation
+message GenerateNumberResp {
+  int32 number = 1;
+}

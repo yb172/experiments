@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package wordgen;
+
+// InternetsWordGenerator gets random word from the internet
+service InternetsWordGenerator {
+
+  // GetWord searches the internet and returns random word
+  rpc GetWord(GetWordReq) returns (GetWordResp) {}
+
+}
+
+// GetWordReq contains data reuqired or helpful for word generation
+message GetWordReq {
+
+}
+
+// GetWordResp contains reults of word generation
+message GetWordResp {
+  string word = 1;
+}

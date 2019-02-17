@@ -1,0 +1,9 @@
+own.port: 10001
+
+# Var names are chosen such that services addresses would be injected by kube
+word.service.host: ~
+word.service.port: ~
+number.service.host: ~
+number.service.port: ~
+internets.service.host: ~
+internets.service.port: ~

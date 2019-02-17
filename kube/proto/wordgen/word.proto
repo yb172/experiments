@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package wordgen;
+
+// WordGenerator generates random word from predefined list
+service WordGenerator {
+
+  // GenerateWord searches the internet and returns random word
+  rpc GenerateWord(GenerateWordReq) returns (GenerateWordResp) {}
+
+}
+
+// GenerateWordReq contains data reuqired or helpful for word generation
+message GenerateWordReq {
+
+}
+
+// GenerateWordResp contains reults of word generation
+message GenerateWordResp {
+  string word = 1;
+}
