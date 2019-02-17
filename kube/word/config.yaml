@@ -1,4 +1,4 @@
-own.port: 10003
+own.port: 10000
 
 # Var names are chosen such that services addresses would be injected by kube
 word.service.host: ~

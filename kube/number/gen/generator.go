@@ -2,6 +2,8 @@ package gen
 
 import (
 	"context"
+	"math/rand"
+	"time"
 
 	"github.com/yb172/experiments/kube/number/proto/wordgen"
 )
@@ -11,6 +13,9 @@ type Server struct {
 }
 
 // GenerateNumber generates number
-func (s *Server) GenerateNumber(context.Context, *wordgen.GenerateNumberReq) (*wordgen.GenerateNumberResp, error) {
-	return nil, nil
+func (s *Server) GenerateNumber(context context.Context, req *wordgen.GenerateNumberReq) (*wordgen.GenerateNumberResp, error) {
+	rand.Seed(time.Now().UTC().UnixNano())
+
+	num := rand.Int31n(req.Min+req.Max) - req.Min
+	return &wordgen.GenerateNumberResp{Number: num}, nil
 }
