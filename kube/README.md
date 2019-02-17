@@ -10,7 +10,4 @@ This project produces a sequence of words randomly generating either:
 
 ## TODO
 
-1. Finish services impl
-1. Make services talk to each other
-1. Add Dockerfiles
 1. Add kube manifests
