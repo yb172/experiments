@@ -12,12 +12,12 @@ import (
 
 const addr = "https://randomword.com"
 
-// Server provides generation services
-type Server struct {
+// Service provides generation services
+type Service struct {
 }
 
 // GetWord generates word
-func (s *Server) GetWord(ctx context.Context, in *wordgen.GetWordReq) (*wordgen.GetWordResp, error) {
+func (s *Service) GetWord(ctx context.Context, in *wordgen.GetWordReq) (*wordgen.GetWordResp, error) {
 	resp, err := http.Get(addr)
 	if err != nil {
 		return nil, fmt.Errorf("error whlie requesting word: %v", err)
@@ -27,19 +27,24 @@ func (s *Server) GetWord(ctx context.Context, in *wordgen.GetWordReq) (*wordgen.
 
 	word, err := extractWord(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("error while parsing page with word")
+		return nil, fmt.Errorf("error while parsing page with word: %v", err)
 	}
 
 	return &wordgen.GetWordResp{Word: word}, nil
 }
 
-func checkWord(t html.Token) (string, bool) {
+func checkWord(t html.Token) bool {
+	// Element should be div
+	if t.Data != "div" {
+		return false
+	}
 	for _, a := range t.Attr {
+		// And it should has id attribute with value "random_word"
 		if a.Key == "id" && a.Val == "random_word" {
-			return t.Data, true
+			return true
 		}
 	}
-	return "", false
+	return false
 }
 
 func extractWord(resp io.Reader) (string, error) {
@@ -54,15 +59,9 @@ func extractWord(resp io.Reader) (string, error) {
 			return "", fmt.Errorf("word is not found")
 		case tt == html.StartTagToken:
 			t := z.Token()
-
-			// Check if the token is an <a> tag
-			isAnchor := t.Data == "a"
-			if !isAnchor {
-				continue
-			}
-
-			if word, hasWord := checkWord(t); hasWord {
-				return word, nil
+			if isWord := checkWord(t); isWord {
+				z.Next()
+				return string(z.Text()), nil
 			}
 		}
 	}

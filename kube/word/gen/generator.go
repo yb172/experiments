@@ -8,12 +8,12 @@ import (
 	"github.com/yb172/experiments/kube/word/proto/wordgen"
 )
 
-// Server provides generation services
-type Server struct {
+// Service provides generation services
+type Service struct {
 }
 
 // GenerateWord generates word
-func (s *Server) GenerateWord(ctx context.Context, in *wordgen.GenerateWordReq) (*wordgen.GenerateWordResp, error) {
+func (s *Service) GenerateWord(ctx context.Context, in *wordgen.GenerateWordReq) (*wordgen.GenerateWordResp, error) {
 	count := len(list)
 	rand.Seed(time.Now().UTC().UnixNano())
 	idx := rand.Intn(count)

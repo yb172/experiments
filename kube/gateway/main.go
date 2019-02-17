@@ -1,13 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"math/rand"
 	"net/http"
-	"time"
 
 	"github.com/yb172/experiments/kube/gateway/cfg"
-	"github.com/yb172/experiments/kube/gateway/rpc"
+	"github.com/yb172/experiments/kube/gateway/gen"
 )
 
 func main() {
@@ -15,22 +14,19 @@ func main() {
 		log.Fatalf("Unable to init config: %s", err)
 	}
 
+	address := fmt.Sprintf(":%v", cfg.Conf.Own.Port)
+	http.HandleFunc("/", serve)
+	log.Fatal(http.ListenAndServe(address, nil))
 }
 
 func serve(w http.ResponseWriter, r *http.Request) {
-	// Seed rand
-	rand.Seed(time.Now().UTC().UnixNano())
-
-	i := rand.Intn(4)
-	var parts []string
-	for i != 0 {
-		switch i {
-		case 1:
-			word, err := rpc.GetWord()
-			if err != nil {
-
-			}
-			parts = append(parts, word)
-		}
+	seq, err := gen.GenerateSeq()
+	if err != nil {
+		log.Printf("Error happened while generating: %v", err)
+		http.Error(w, fmt.Sprintf("Error while generating seq: %v", err), http.StatusInternalServerError)
+	}
+	_, err = fmt.Fprintf(w, seq)
+	if err != nil {
+		log.Printf("Error while writing response: %v", err)
 	}
 }

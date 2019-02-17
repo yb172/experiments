@@ -11,13 +11,14 @@ import (
 
 // GenerateSeq generates sequence
 func GenerateSeq() (string, error) {
-	// Seed rand
 	rand.Seed(time.Now().UTC().UnixNano())
 
-	i := rand.Intn(4)
 	var parts []string
-	for i != 0 {
+	for {
+		i := rand.Intn(4)
 		switch i {
+		case 0:
+			return strings.Join(parts, "-"), nil
 		case 1:
 			word, err := rpc.GenerateWord()
 			if err != nil {
@@ -37,8 +38,5 @@ func GenerateSeq() (string, error) {
 			}
 			parts = append(parts, word)
 		}
-		i = rand.Intn(4)
 	}
-
-	return strings.Join(parts, "-"), nil
 }
