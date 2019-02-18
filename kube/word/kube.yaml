@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: gen-word
+  namespace: gen
   labels:
     app: gen-word
 spec:
@@ -15,6 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: gen-word
+  namespace: gen
   labels:
     app: gen-word
 spec:

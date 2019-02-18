@@ -13,6 +13,7 @@ build:
 deploy:
   kubectl:
     manifests:
+    - kube.yaml
     - gateway/kube.yaml
     - internets/kube.yaml
     - number/kube.yaml

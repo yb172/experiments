@@ -30,5 +30,5 @@ skaffold run --tail
 Then in a separate terminal:
 
 ```bash
-minikube service gen-gateway
+minikube service gen-gateway -n gen
 ```
