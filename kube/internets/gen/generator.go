@@ -10,7 +10,7 @@ import (
 	"golang.org/x/net/html"
 )
 
-const addr = "https://randomword.com"
+const addr = "http://randomword.com"
 
 // Service provides generation services
 type Service struct {

@@ -12,7 +12,7 @@ import (
 
 // GenerateWord requests word from word generator
 func GenerateWord() (string, error) {
-	address := fmt.Sprintf("%s:%v", cfg.Conf.Word.Service.Host, cfg.Conf.Word.Service.Port)
+	address := fmt.Sprintf("%s:%v", cfg.Conf.Gen.Word.Service.Host, cfg.Conf.Gen.Word.Service.Port)
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		return "", fmt.Errorf("error while connecting: %v", err)

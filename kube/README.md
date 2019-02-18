@@ -8,6 +8,22 @@ This project produces a sequence of words randomly generating either:
 
 `gateway` provides api to trigger sequence creation.
 
-## TODO
+## To run
 
-1. Add kube manifests
+First you would need some software to be installed:
+
+* [Docker](https://docker.io)
+* [Minikube](https://github.com/kubernetes/minikube) - should be installed and running
+* [Skaffold](https://skaffold.dev)
+
+To run project please run:
+
+```bash
+skaffold run --tail
+```
+
+Then in a separate terminal:
+
+```bash
+minikube service gen-gateway
+```

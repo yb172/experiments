@@ -6,24 +6,26 @@ type Config struct {
 		Port int
 	}
 
-	Word struct {
-		Service struct {
-			Host string
-			Port int
+	Gen struct {
+		Word struct {
+			Service struct {
+				Host string
+				Port int
+			}
 		}
-	}
 
-	Number struct {
-		Service struct {
-			Host string
-			Port int
+		Number struct {
+			Service struct {
+				Host string
+				Port int
+			}
 		}
-	}
 
-	Internets struct {
-		Service struct {
-			Host string
-			Port int
+		Internets struct {
+			Service struct {
+				Host string
+				Port int
+			}
 		}
 	}
 }

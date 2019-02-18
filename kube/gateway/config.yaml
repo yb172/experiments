@@ -1,9 +1,9 @@
 own.port: 8000
 
 # Var names are chosen such that services addresses would be injected by kube
-word.service.host: ~
-word.service.port: ~
-number.service.host: ~
-number.service.port: ~
-internets.service.host: ~
-internets.service.port: ~
+gen.word.service.host: ~
+gen.word.service.port: ~
+gen.number.service.host: ~
+gen.number.service.port: ~
+gen.internets.service.host: ~
+gen.internets.service.port: ~

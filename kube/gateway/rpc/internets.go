@@ -12,7 +12,7 @@ import (
 
 // GetWord requests word from internets
 func GetWord() (string, error) {
-	address := fmt.Sprintf("%s:%v", cfg.Conf.Internets.Service.Host, cfg.Conf.Internets.Service.Port)
+	address := fmt.Sprintf("%s:%v", cfg.Conf.Gen.Internets.Service.Host, cfg.Conf.Gen.Internets.Service.Port)
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		return "", fmt.Errorf("error while connecting: %v", err)

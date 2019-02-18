@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gen-gateway
+  labels:
+    app: gen-gateway
+spec:
+  type: NodePort
+  ports:
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: gen-gateway
+  selector:
+    app: gen-gateway
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen-gateway
+  labels:
+    app: gen-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gen-gateway
+  template:
+    metadata:
+      labels:
+        app: gen-gateway
+    spec:
+      containers:
+      - name: gen-gateway
+        image: gcr.io/word-gen-314/gen-gateway
+        ports:
+        - containerPort: 50051

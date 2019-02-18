@@ -1,0 +1,34 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gen-internets
+  labels:
+    app: gen-internets
+spec:
+  ports:
+    - port: 10000
+      name: gen-internets
+  selector:
+    app: gen-internets
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gen-internets
+  labels:
+    app: gen-internets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gen-internets
+  template:
+    metadata:
+      labels:
+        app: gen-internets
+    spec:
+      containers:
+      - name: gen-internets
+        image: gcr.io/word-gen-314/gen-internets
+        ports:
+        - containerPort: 10000

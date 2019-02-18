@@ -6,5 +6,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -a -o app .
 FROM scratch
 COPY --from=builder /go/src/github.com/yb172/experiments/kube/gateway/app app
 COPY --from=builder /go/src/github.com/yb172/experiments/kube/gateway/config.yaml config.yaml
-EXPOSE 3000
+EXPOSE 8000
 ENTRYPOINT ["./app"]

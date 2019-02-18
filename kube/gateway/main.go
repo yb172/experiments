@@ -4,7 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
+	"strings"
 
+	"github.com/spf13/viper"
 	"github.com/yb172/experiments/kube/gateway/cfg"
 	"github.com/yb172/experiments/kube/gateway/gen"
 )
@@ -14,8 +17,16 @@ func main() {
 		log.Fatalf("Unable to init config: %s", err)
 	}
 
+	for _, e := range os.Environ() {
+		pair := strings.Split(e, "=")
+		fmt.Println(pair)
+	}
+
+	viper.Debug()
+
 	address := fmt.Sprintf(":%v", cfg.Conf.Own.Port)
 	http.HandleFunc("/", serve)
+	log.Printf("Start serving on %s", address)
 	log.Fatal(http.ListenAndServe(address, nil))
 }
 
