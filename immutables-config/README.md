@@ -49,6 +49,7 @@ Question is: can we have the same nice auto-load thing but with nice immutable c
 Immutables allow us to define data class as interface with `@Immutables` annotation:
 
 ```java
+// nice/Config.java
 package nice;
 
 import java.util.List;
@@ -70,5 +71,66 @@ final Config config = ImmutableConfig.builder()
     .addLibraries("immutables", "config")
     .build();
 ```
+
+See [LoadNiceConfig.java](src/test/java/LoadNiceConfig.java)
+
+## Problem
+
+Unfortunately if we would try to combine two objects:
+`ConfigBeanFactory.create(config, nice.Config.class)` then we would get an exception:
+
+```text
+com.typesafe.config.ConfigException$BadBean: nice.Config needs a public no-args constructor to be used as a bean
+```
+
+Ok, it makes sense: we're passing interface which doesn't have constructor.
+But `ImmutableConfig` doesn't have constructor either - it has builder class.
+
+So maybe we could pass builder class?
+
+```java
+final ImmutableConfig.Builder builder = ConfigBeanFactory.create(config, ImmutableConfig.Builder.class);
+final nice.Config niceConfig = builder.build();
+```
+
+Well, in that case we would get another problem:
+
+```text
+com.typesafe.config.ConfigException$BadBean: nice.ImmutableConfig$Builder getters and setters are not accessible, they must be for use as a bean
+```
+
+That makes sense, our builder by default generates method names which are the same as interface method names.
+
+## Solution
+
+To solve the problem we could use `@Modifiable` annotation instead of `@Immutable`
+as [suggested in issue](https://immutables.github.io/immutable.html#plain-public-constructor):
+
+```java
+// nice/Config.java
+package nice;
+
+import java.util.List;
+
+import org.immutables.value.Value;
+
+@Value.Modifiable
+@Value.Style(
+    create = "new", // rename create method to "new", turning factory into plain public constuctor,
+    beanFriendlyModifiables = true // setters will return void instead of instance if needed for strict javabean framework
+)
+public interface Config {
+  List<String> getLibraries();
+}
+```
+
+Then our config loading code would look like:
+
+```java
+final com.typesafe.config.Config config = ConfigFactory.load();
+final nice.Config niceConfig = ConfigBeanFactory.create(config, ModifiableConfig.class);
+```
+
+And it would work perfectly fine.
 
 See [LoadNiceConfig.java](src/test/java/LoadNiceConfig.java)
