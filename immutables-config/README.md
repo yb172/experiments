@@ -43,3 +43,32 @@ final ugly.Config uglyConfig = ConfigBeanFactory.create(config, ugly.Config.clas
 See [LoadUglyConfig.java](src/test/java/LoadUglyConfig.java)
 
 Question is: can we have the same nice auto-load thing but with nice immutable config object?
+
+## Immutables example
+
+Immutables allow us to define data class as interface with `@Immutables` annotation:
+
+```java
+package nice;
+
+import java.util.List;
+
+import org.immutables.value.Value;
+
+@Value.Immutable
+public interface Config {
+  List<String> libraries();
+}
+```
+
+Then we should compile code (e.g. run `compileJava` gradle task) and immutables
+would generate implementation of the interface in `build/generated/sources/annotationProcessor/java/main/nice/ImmutableConfig.java`.
+It could be used in a following way:
+
+```java
+final Config config = ImmutableConfig.builder()
+    .addLibraries("immutables", "config")
+    .build();
+```
+
+See [LoadNiceConfig.java](src/test/java/LoadNiceConfig.java)
