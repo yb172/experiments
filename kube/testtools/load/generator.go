@@ -1,6 +1,7 @@
 package load
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -12,6 +13,7 @@ var rate int
 
 // GenerateLoad generates load on our services
 func GenerateLoad() error {
+	rate = cfg.Conf.Default.RPS
 	exit := make(chan interface{})
 	go generator(exit)
 	readKeyboard(exit)
@@ -33,10 +35,17 @@ func generator(exit <-chan interface{}) error {
 }
 
 func makeRequest() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered from panic", r)
+		}
+	}()
 	resp, err := http.Get(cfg.Conf.Service.Address)
 	if err != nil {
 		log.Printf("error while making request: %v", err)
+		return
 	}
+	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		log.Printf("Status is not OK: %v", resp.StatusCode)
 	}
