@@ -1,6 +1,7 @@
 package load
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -34,6 +35,11 @@ func generator(exit <-chan interface{}) error {
 }
 
 func makeRequest() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("Recovered from panic", r)
+		}
+	}()
 	resp, err := http.Get(cfg.Conf.Service.Address)
 	if err != nil {
 		log.Printf("error while making request: %v", err)
