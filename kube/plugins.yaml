@@ -1,3 +1,4 @@
 plugins:
   yb172/experiments:
   - size
+  - cat
