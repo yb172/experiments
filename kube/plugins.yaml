@@ -2,3 +2,14 @@ plugins:
   yb172/experiments:
   - size
   - cat
+  - config-updater
+
+config_updater:
+  maps:
+    # Update the config configmap whenever config.yaml changes
+    kube/config.yaml:
+      name: config
+    # Update the plugins configmap whenever plugins.yaml changes
+    kube/plugins.yaml:
+      name: plugins
+
