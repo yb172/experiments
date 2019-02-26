@@ -1,0 +1,20 @@
+presubmits:
+  yb172/experiments:
+  - name: test-job
+    decorate: false
+    run_if_changed: "kube/.*"
+    skip_report: false
+    context: test-job
+    max_concurrency: 10
+    spec:
+      containers:
+      - image: alpine
+        command:
+        - "printenv"
+    trigger: "(?m)^/test this"
+    rerun_command: "/test this"
+
+sinker:
+  resync_period: 1m
+  max_prowjob_age: 2h
+  max_pod_age: 30m
