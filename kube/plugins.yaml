@@ -1,7 +1,6 @@
 plugins:
   yb172/experiments:
   - size
-  - cat
   - config-updater
 
 config_updater:
