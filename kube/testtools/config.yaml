@@ -1,4 +1,6 @@
 default:
   rps: 10
 
-service.address: http://192.168.99.100:30515
+# Names are chosen such that GEN_GATEWAY_SERVICE_HOST var provided by kubernetes would override it
+gen.gateway.service.host: 192.168.99.100
+gen.gateway.service.port: 30515

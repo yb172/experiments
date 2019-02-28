@@ -12,11 +12,16 @@ import (
 var rate int
 
 // GenerateLoad generates load on our services
-func GenerateLoad() error {
+func GenerateLoad(attachKeyboard bool) error {
 	rate = cfg.Conf.Default.RPS
 	exit := make(chan interface{})
+	log.Printf("Starting to generate load @%v RPS", rate)
 	go generator(exit)
-	readKeyboard(exit)
+	if attachKeyboard {
+		readKeyboard(exit)
+	} else {
+		<-exit
+	}
 	return nil
 }
 
@@ -40,7 +45,8 @@ func makeRequest() {
 			fmt.Println("Recovered from panic", r)
 		}
 	}()
-	resp, err := http.Get(cfg.Conf.Service.Address)
+	address := fmt.Sprintf("http://%s:%s", cfg.Conf.Gen.Gateway.Service.Host, cfg.Conf.Gen.Gateway.Service.Port)
+	resp, err := http.Get(address)
 	if err != nil {
 		log.Printf("error while making request: %v", err)
 		return
