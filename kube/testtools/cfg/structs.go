@@ -6,7 +6,12 @@ type Config struct {
 		RPS int
 	}
 
-	Service struct {
-		Address string
+	Gen struct {
+		Gateway struct {
+			Service struct {
+				Host string
+				Port string
+			}
+		}
 	}
 }

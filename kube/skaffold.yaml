@@ -10,6 +10,8 @@ build:
     context: number
   - image: gcr.io/word-gen-314/gen-word
     context: word
+  - image: gcr.io/word-gen-314/gen-testtools
+    context: testtools
 deploy:
   kubectl:
     manifests:
@@ -18,3 +20,4 @@ deploy:
     - internets/kube.yaml
     - number/kube.yaml
     - word/kube.yaml
+    - testtools/kube.yaml
