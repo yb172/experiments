@@ -1,36 +1,38 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gen-internets
+  name: internets
   namespace: gen
   labels:
-    app: gen-internets
+    app: internets
 spec:
+  clusterIP: None
   ports:
     - port: 10000
-      name: gen-internets
+      name: grpc
   selector:
-    app: gen-internets
+    app: internets
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gen-internets
+  name: internets
   namespace: gen
   labels:
-    app: gen-internets
+    app: internets
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gen-internets
+      app: internets
   template:
     metadata:
       labels:
-        app: gen-internets
+        app: internets
     spec:
       containers:
-      - name: gen-internets
-        image: gcr.io/word-gen-314/gen-internets
+      - name: internets
+        image: gcr.io/word-gen-314/internets
         ports:
         - containerPort: 10000
+          name: grpc

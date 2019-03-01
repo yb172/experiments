@@ -17,4 +17,4 @@ spec:
     spec:
       containers:
       - name: load-generator
-        image: gcr.io/word-gen-314/gen-testtools
+        image: gcr.io/word-gen-314/testtools

@@ -12,7 +12,7 @@ import (
 
 // GenerateNumber requests number
 func GenerateNumber() (string, error) {
-	address := fmt.Sprintf("%s:%v", cfg.Conf.Gen.Number.Service.Host, cfg.Conf.Gen.Number.Service.Port)
+	address := fmt.Sprintf("%s:%v", cfg.Conf.Number.Service.Host, cfg.Conf.Number.Service.Port)
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		return "", fmt.Errorf("error while connecting: %v", err)

@@ -45,7 +45,7 @@ func makeRequest() {
 			fmt.Println("Recovered from panic", r)
 		}
 	}()
-	address := fmt.Sprintf("http://%s:%s", cfg.Conf.Gen.Gateway.Service.Host, cfg.Conf.Gen.Gateway.Service.Port)
+	address := cfg.Conf.Gateway.Service.Address
 	resp, err := http.Get(address)
 	if err != nil {
 		log.Printf("error while making request: %v", err)

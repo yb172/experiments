@@ -1,36 +1,38 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gen-number
+  name: number
   namespace: gen
   labels:
-    app: gen-number
+    app: number
 spec:
+  clusterIP: None
   ports:
     - port: 10000
-      name: gen-number
+      name: grpc
   selector:
-    app: gen-number
+    app: number
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gen-number
+  name: number
   namespace: gen
   labels:
-    app: gen-number
+    app: number
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gen-number
+      app: number
   template:
     metadata:
       labels:
-        app: gen-number
+        app: number
     spec:
       containers:
-      - name: gen-number
-        image: gcr.io/word-gen-314/gen-number
+      - name: number
+        image: gcr.io/word-gen-314/number
         ports:
         - containerPort: 10000
+          name: grpc
