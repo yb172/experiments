@@ -1,36 +1,38 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gen-word
+  name: word
   namespace: gen
   labels:
-    app: gen-word
+    app: word
 spec:
+  clusterIP: None
   ports:
     - port: 10000
-      name: gen-word
+      name: grpc
   selector:
-    app: gen-word
+    app: word
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gen-word
+  name: word
   namespace: gen
   labels:
-    app: gen-word
+    app: word
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gen-word
+      app: word
   template:
     metadata:
       labels:
-        app: gen-word
+        app: word
     spec:
       containers:
-      - name: gen-word
-        image: gcr.io/word-gen-314/gen-word
+      - name: word
+        image: gcr.io/word-gen-314/word
         ports:
         - containerPort: 10000
+          name: grpc

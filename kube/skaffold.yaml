@@ -2,20 +2,20 @@ apiVersion: skaffold/v1beta5
 kind: Config
 build:
   artifacts:
-  - image: gcr.io/word-gen-314/gen-gateway
+  - image: gcr.io/word-gen-314/gateway
     context: gateway
-  - image: gcr.io/word-gen-314/gen-internets
+  - image: gcr.io/word-gen-314/internets
     context: internets
-  - image: gcr.io/word-gen-314/gen-number
+  - image: gcr.io/word-gen-314/number
     context: number
-  - image: gcr.io/word-gen-314/gen-word
+  - image: gcr.io/word-gen-314/word
     context: word
-  - image: gcr.io/word-gen-314/gen-testtools
+  - image: gcr.io/word-gen-314/testtools
     context: testtools
 deploy:
   kubectl:
     manifests:
-    - kube.yaml
+    # - kube.yaml
     - gateway/kube.yaml
     - internets/kube.yaml
     - number/kube.yaml

@@ -1,39 +1,39 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: gen-gateway
+  name: gateway
   namespace: gen
   labels:
-    app: gen-gateway
+    app: gateway
 spec:
-  type: NodePort
+  type: LoadBalancer
   ports:
-    - port: 8000
+    - port: 80
       targetPort: 8000
-      protocol: TCP
-      name: gen-gateway
+      name: http
   selector:
-    app: gen-gateway
+    app: gateway
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gen-gateway
+  name: gateway
   namespace: gen
   labels:
-    app: gen-gateway
+    app: gateway
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: gen-gateway
+      app: gateway
   template:
     metadata:
       labels:
-        app: gen-gateway
+        app: gateway
     spec:
       containers:
-      - name: gen-gateway
-        image: gcr.io/word-gen-314/gen-gateway
+      - name: gateway
+        image: gcr.io/word-gen-314/gateway
         ports:
-        - containerPort: 50051
+        - containerPort: 8000
+          name: http
