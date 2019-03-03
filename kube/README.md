@@ -13,6 +13,8 @@ Example application produces a sequence of words randomly generating either:
 
 As of now there is no front-end, only `gen-gateway` service provides http api to trigger sequence creation.
 
+Namespace is configured to be meshed: [linkerd](http://linkerd.io) is used as a service mesh.
+
 ## To run
 
 First you would need some software to be installed:
