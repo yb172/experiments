@@ -2,8 +2,9 @@ plugins:
   yb172/experiments:
   - size
   - config-updater
+  - trigger
 
-config_updater:
+config-updater:
   maps:
     # Update the config configmap whenever config.yaml changes
     kube/config.yaml:
@@ -12,3 +13,6 @@ config_updater:
     kube/plugins.yaml:
       name: plugins
 
+triggers:
+  - repos:
+    - yb172/experiments
