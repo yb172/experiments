@@ -9,6 +9,8 @@ presubmits:
       - image: alpine
         command:
         - "/bin/printenv"
+    trigger: "(?m)^/test this"
+    rerun_command: "/test this"    
 
 sinker:
   resync_period: 1m
